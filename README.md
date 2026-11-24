@@ -1,6 +1,6 @@
 # AutoLoc — location de voitures en ligne
 
-> Projet réalisé par **Hans-Kevin BEBADA** dans le cadre du module **UP ASI — Architecture des Systèmes d'Information** (ECE, 2026-2027).
+> Projet réalisé en groupe par **Hans-Kevin BEBADA**, **Hanniel DEGBELO** et **Aboubakar MFONZIE** dans le cadre du module **UP ASI — Architecture des Systèmes d'Information** (ECE, 2026-2027).
 
 ![Page d'accueil du site AutoLoc](captures/01-accueil.jpg)
 
@@ -497,7 +497,7 @@ D'autres cas techniques sont traités dans la section *Dépannage* de [`autoloc-
 
 ## 15. Crédits
 
-- **Réalisation :** Hans-Kevin BEBADA, ECE, module UP ASI (2026-2027).
+- **Réalisation :** Hans-Kevin BEBADA, Hanniel DEGBELO et Aboubakar MFONZIE, ECE, module UP ASI (2026-2027).
 - **Modèle graphique du site :** [Carbook](https://colorlib.com) de Colorlib, licence CC BY 3.0. Le lien vers Colorlib en pied de page est conservé, comme l'exige la licence.
 - **Police :** Poppins (Google Fonts).
 - **Outils libres :** Spring Boot, Hibernate, MariaDB, Prometheus, Grafana, Mailpit, Bootstrap, jQuery, JUnit.
