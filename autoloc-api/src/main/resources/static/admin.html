@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title>AutoLoc · Espace agence</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/ionicons.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/autoloc.css">
+  </head>
+  <body class="page-admin">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark admin-nav">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">Auto<span>Loc</span> <small class="admin-nav-sous-titre">Espace agence</small></a>
+        <div class="ml-auto d-flex align-items-center">
+          <span id="admin-utilisateur" class="admin-utilisateur mr-3 d-none d-md-inline" hidden></span>
+          <button type="button" id="admin-deconnexion" class="btn btn-outline-light btn-sm mr-2" hidden>Se déconnecter</button>
+          <a href="index.html" class="btn btn-secondary btn-sm">Vitrine</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container admin-contenu">
+
+      <section id="admin-connexion" class="admin-connexion">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <div id="panneau-connexion">
+              <h1 class="h4 mb-1">Connexion agence</h1>
+              <p class="text-muted mb-4">Réservé aux comptes disposant du rôle ADMIN.</p>
+              <div id="connexion-info" class="alert alert-success" role="status" hidden></div>
+              <form id="form-connexion" novalidate>
+                <div class="form-group">
+                  <label for="connexion-utilisateur">Identifiant</label>
+                  <input type="text" class="form-control" id="connexion-utilisateur" autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                  <div class="d-flex justify-content-between align-items-baseline">
+                    <label for="connexion-motdepasse">Mot de passe</label>
+                    <button type="button" class="btn btn-link lien-discret" data-panneau="oubli">Mot de passe oublié ?</button>
+                  </div>
+                  <input type="password" class="form-control" id="connexion-motdepasse" autocomplete="current-password" required>
+                </div>
+                <div id="connexion-erreur" class="alert alert-danger" role="alert" hidden></div>
+                <button type="submit" class="btn btn-primary w-100 py-2">Se connecter</button>
+                <p class="small text-muted mt-3 mb-0">Les identifiants restent en mémoire dans cet onglet uniquement : recharger la page déconnecte.</p>
+              </form>
+            </div>
+
+            <div id="panneau-oubli" hidden>
+              <h1 class="h4 mb-1">Mot de passe oublié</h1>
+              <p class="text-muted mb-4">Indiquez l'adresse e-mail de votre compte : vous recevrez un lien pour choisir un nouveau mot de passe.</p>
+              <form id="form-oubli" novalidate>
+                <div class="form-group">
+                  <label for="oubli-email">Adresse e-mail</label>
+                  <input type="email" class="form-control" id="oubli-email" autocomplete="email" maxlength="150" required>
+                  <div class="invalid-feedback" id="oubli-email-erreur"></div>
+                </div>
+                <div id="oubli-resultat" class="alert alert-success" role="status" hidden></div>
+                <div id="oubli-erreur" class="alert alert-danger" role="alert" hidden></div>
+                <button type="submit" id="oubli-envoyer" class="btn btn-primary w-100 py-2">Recevoir le lien</button>
+                <p class="small text-muted mt-3 mb-0">En local, les e-mails arrivent dans la boîte de test Mailpit :
+                  <a href="http://localhost:8025" target="_blank" rel="noopener">localhost:8025</a>.</p>
+              </form>
+              <button type="button" class="btn btn-link lien-discret mt-3" data-panneau="connexion">← Retour à la connexion</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin-tableau" hidden>
+        <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
+          <div>
+            <h1 class="h3 mb-1">Réservations</h1>
+            <p class="text-muted mb-0" id="admin-maj">–</p>
+          </div>
+          <button type="button" id="admin-rafraichir" class="btn btn-outline-primary btn-sm">Actualiser</button>
+        </div>
+
+        <div class="row indicateurs mb-4" id="admin-indicateurs"></div>
+
+        <div class="d-flex flex-wrap align-items-center mb-3 admin-outils">
+          <div id="admin-filtres" class="filtres-flotte mr-auto" role="group" aria-label="Filtrer par statut"></div>
+          <input type="search" id="admin-recherche" class="form-control admin-recherche" placeholder="Nom, e-mail ou plaque…" aria-label="Rechercher">
+        </div>
+
+        <div id="admin-message" class="alert" role="status" hidden></div>
+
+        <div class="table-responsive">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th scope="col">N°</th>
+                <th scope="col">Client</th>
+                <th scope="col">Véhicule</th>
+                <th scope="col">Période</th>
+                <th scope="col" class="text-right colonne-montant">Montant</th>
+                <th scope="col" class="colonne-paiement">Paiement</th>
+                <th scope="col">Statut</th>
+                <th scope="col" class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-lignes"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- Encaissement -->
+    <div class="modal fade modale-autoloc" id="modale-encaissement" tabindex="-1" role="dialog" aria-labelledby="modale-encaissement-titre" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" id="form-encaissement" novalidate>
+          <div class="modal-header">
+            <h5 class="modal-title" id="modale-encaissement-titre">Encaisser un paiement</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <p id="encaissement-resume" class="mb-3"></p>
+            <div class="form-group">
+              <label for="encaissement-montant">Montant (€)</label>
+              <input type="number" step="0.01" min="0.01" class="form-control" id="encaissement-montant" name="montant" required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="form-group">
+              <label for="encaissement-mode">Mode de paiement</label>
+              <select class="form-control" id="encaissement-mode" name="modePaiement">
+                <option value="CARTE">Carte bancaire</option>
+                <option value="ESPECES">Espèces</option>
+                <option value="VIREMENT">Virement</option>
+              </select>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div id="encaissement-erreur" class="alert alert-danger" role="alert" hidden></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary" id="encaissement-valider">Enregistrer le paiement</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirmation d'une action -->
+    <div class="modal fade modale-autoloc" id="modale-confirmation" tabindex="-1" role="dialog" aria-labelledby="modale-confirmation-titre" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modale-confirmation-titre">Confirmer</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <p id="confirmation-texte" class="mb-0"></p>
+            <div id="confirmation-erreur" class="alert alert-danger mt-3 mb-0" role="alert" hidden></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Retour</button>
+            <button type="button" class="btn btn-primary" id="confirmation-valider">Confirmer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/commun.js"></script>
+    <script src="js/admin.js"></script>
+  </body>
+</html>

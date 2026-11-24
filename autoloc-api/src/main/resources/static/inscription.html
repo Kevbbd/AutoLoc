@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title>AutoLoc · Créer mon compte</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex">
+    <!-- Aucune adresse de cette page n'est transmise aux sites tiers (polices) : le lien reste privé. -->
+    <meta name="referrer" content="no-referrer">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/autoloc.css">
+  </head>
+  <body class="page-admin">
+
+    <nav class="navbar navbar-dark bg-dark admin-nav">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">Auto<span>Loc</span> <small class="admin-nav-sous-titre">Mon compte</small></a>
+        <a href="index.html" class="btn btn-secondary btn-sm">Retour au site</a>
+      </div>
+    </nav>
+
+    <main class="container admin-contenu">
+      <section class="admin-connexion page-inscription">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <h1 class="h4 mb-1">Créer mon compte</h1>
+
+            <p id="inscription-verification" class="text-muted mb-0" role="status">Vérification du lien…</p>
+
+            <div id="inscription-invalide" hidden>
+              <div id="inscription-invalide-message" class="alert alert-warning mt-3" role="alert"></div>
+              <a href="index.html#inscription" class="btn btn-primary w-100 py-2">Recommencer l'inscription</a>
+            </div>
+
+            <form id="form-inscription" novalidate hidden>
+              <p class="text-muted mb-3">Adresse confirmée : <strong id="inscription-email"></strong></p>
+              <!-- Pour les gestionnaires de mots de passe : associe le mot de passe à cette adresse -->
+              <input type="email" id="inscription-identifiant" autocomplete="username" hidden aria-hidden="true">
+
+              <div id="inscription-client-existant" class="alert alert-info" role="status" hidden></div>
+
+              <div id="inscription-identite">
+                <div class="form-row">
+                  <div class="form-group col-sm-6">
+                    <label for="inscription-prenom">Prénom</label>
+                    <input type="text" class="form-control" id="inscription-prenom" name="prenom" maxlength="50" autocomplete="given-name" required>
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="inscription-nom">Nom</label>
+                    <input type="text" class="form-control" id="inscription-nom" name="nom" maxlength="50" autocomplete="family-name" required>
+                    <div class="invalid-feedback"></div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-sm-6">
+                    <label for="inscription-telephone">Téléphone <span class="facultatif">(facultatif)</span></label>
+                    <input type="tel" class="form-control" id="inscription-telephone" name="telephone" maxlength="20" autocomplete="tel">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="inscription-numPermis">N° de permis</label>
+                    <input type="text" class="form-control" id="inscription-numPermis" name="numPermis" maxlength="30" required>
+                    <div class="invalid-feedback"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="inscription-motdepasse">Mot de passe</label>
+                <div class="input-group">
+                  <input type="password" class="form-control" id="inscription-motdepasse" name="motDePasse" autocomplete="new-password" maxlength="64" required aria-describedby="inscription-regles">
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-secondary" id="inscription-afficher" aria-pressed="false">Afficher</button>
+                  </div>
+                </div>
+                <!-- Hors du groupe du champ : affiché par le script (Bootstrap ne le montrerait pas tout seul) -->
+                <div class="invalid-feedback" id="inscription-motdepasse-erreur"></div>
+                <ul id="inscription-regles" class="regles-mdp">
+                  <li data-regle="longueur">Au moins 8 caractères</li>
+                  <li data-regle="lettre">Au moins une lettre</li>
+                  <li data-regle="chiffre">Au moins un chiffre</li>
+                  <li data-regle="espaces">Pas d'espace au début ni à la fin</li>
+                  <li data-regle="adresse">Ne contient pas le début de votre adresse e-mail</li>
+                </ul>
+              </div>
+              <div class="form-group">
+                <label for="inscription-confirmation">Confirmation du mot de passe</label>
+                <input type="password" class="form-control" id="inscription-confirmation" autocomplete="new-password" maxlength="64" required>
+                <div class="invalid-feedback">Les deux mots de passe ne sont pas identiques.</div>
+              </div>
+              <div id="inscription-erreur" class="alert alert-danger" role="alert" hidden></div>
+              <button type="submit" id="inscription-valider" class="btn btn-primary w-100 py-2">Créer mon compte</button>
+            </form>
+
+            <div id="inscription-succes" hidden>
+              <div id="inscription-succes-message" class="alert alert-success mt-3" role="status"></div>
+              <a href="index.html#connexion" class="btn btn-primary w-100 py-2">Se connecter</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/commun.js"></script>
+    <script src="js/inscription.js"></script>
+  </body>
+</html>

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title>AutoLoc · Location de véhicules</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="AutoLoc : la flotte de véhicules en temps réel, servie par l'API Spring Boot du projet UP ASI.">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/ionicons.min.css">
+    <link rel="stylesheet" href="css/flaticon.css">
+    <link rel="stylesheet" href="css/icomoon.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/autoloc.css">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+      <div class="container">
+        <a class="navbar-brand" href="#accueil">Auto<span>Loc</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Afficher le menu">
+          <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active"><a href="#accueil" class="nav-link">Accueil</a></li>
+            <li class="nav-item"><a href="#flotte" class="nav-link">Flotte</a></li>
+            <li class="nav-item"><a href="#agences" class="nav-link">Agences</a></li>
+            <li class="nav-item"><a href="#technique" class="nav-link">Sous le capot</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" data-action="ma-reservation">Ma réservation</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" data-action="mon-compte" id="nav-compte">Mon compte</a></li>
+            <li class="nav-item"><a href="admin.html" class="nav-link">Espace agence</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- END nav -->
+
+    <div id="accueil" class="hero-wrap ftco-degree-bg fond-accueil" data-stellar-background-ratio="0.5">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row no-gutters slider-text justify-content-start align-items-center justify-content-center">
+          <div class="col-lg-8 ftco-animate">
+            <div class="text w-100 text-center mb-md-5 pb-md-5">
+              <h1 class="mb-4">La bonne voiture, au bon moment</h1>
+              <p class="texte-intro">Citadines, berlines, SUV et utilitaires : chaque véhicule affiché ici vient en direct de la base AutoLoc, servi par notre API Spring Boot.</p>
+              <a href="#flotte" class="icon-wrap d-flex align-items-center mt-4 justify-content-center">
+                <div class="icon d-flex align-items-center justify-content-center">
+                  <span class="ion-ios-arrow-down"></span>
+                </div>
+                <div class="heading-title ml-5">
+                  <span>Découvrir la flotte</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="plateforme" class="ftco-section ftco-no-pt bg-light">
+      <div class="container">
+        <div class="row no-gutters">
+          <div class="col-md-12 featured-top">
+            <div class="row no-gutters">
+              <div class="col-md-4 d-flex align-items-center">
+                <form id="form-recherche" class="request-form ftco-animate bg-primary w-100" novalidate>
+                  <h2>Planifiez votre location</h2>
+                  <div class="form-group">
+                    <label for="recherche-debut" class="label">Date de départ</label>
+                    <input type="date" class="form-control" id="recherche-debut" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="recherche-fin" class="label">Date de retour</label>
+                    <input type="date" class="form-control" id="recherche-fin" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="recherche-categorie" class="label">Catégorie</label>
+                    <select class="form-control" id="recherche-categorie">
+                      <option value="TOUS">Toutes les catégories</option>
+                      <option value="CITADINE">Citadine</option>
+                      <option value="BERLINE">Berline</option>
+                      <option value="SUV">SUV</option>
+                      <option value="UTILITAIRE">Utilitaire</option>
+                    </select>
+                  </div>
+                  <p id="recherche-erreur" class="recherche-erreur" role="alert" hidden></p>
+                  <div class="form-group mb-3">
+                    <button type="submit" class="btn btn-secondary py-3 px-4 w-100">Voir les véhicules disponibles</button>
+                  </div>
+                  <ul class="list-unstyled statut-liste statut-compact mb-0">
+                    <li>
+                      <span class="libelle">API AutoLoc</span>
+                      <span id="statut-api" class="pastille pastille-inconnue">Vérification…</span>
+                    </li>
+                    <li>
+                      <span class="libelle">Disponibles aujourd'hui</span>
+                      <span id="statut-disponibles" class="valeur">–</span>
+                    </li>
+                    <li>
+                      <span class="libelle">Vérifiée à</span>
+                      <span id="statut-heure" class="valeur">–</span>
+                    </li>
+                  </ul>
+                </form>
+              </div>
+              <div class="col-md-8 d-flex align-items-center">
+                <div class="services-wrap rounded-right w-100">
+                  <h3 class="heading-section mb-4">Louer en trois étapes</h3>
+                  <div class="row d-flex mb-4">
+                    <div class="col-md-4 d-flex align-self-stretch ftco-animate">
+                      <div class="services w-100 text-center">
+                        <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-route"></span></div>
+                        <div class="text w-100">
+                          <h3 class="heading mb-2">Choisissez vos dates</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 d-flex align-self-stretch ftco-animate">
+                      <div class="services w-100 text-center">
+                        <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-handshake"></span></div>
+                        <div class="text w-100">
+                          <h3 class="heading mb-2">Comparez les véhicules</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 d-flex align-self-stretch ftco-animate">
+                      <div class="services w-100 text-center">
+                        <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-rent"></span></div>
+                        <div class="text w-100">
+                          <h3 class="heading mb-2">Réservez en ligne</h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mb-0">
+                    <a href="#flotte" class="btn btn-primary py-3 px-4 mr-2 mb-2">Voir toute la flotte</a>
+                    <a href="#" class="btn btn-outline-primary py-3 px-4 mb-2" data-action="ma-reservation">Retrouver ma réservation</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="flotte" class="ftco-section ftco-no-pt bg-light">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-12 heading-section text-center ftco-animate mb-4">
+            <span class="subheading">Notre flotte</span>
+            <h2 class="mb-2">Véhicules en temps réel</h2>
+          </div>
+        </div>
+        <div id="bandeau-periode" class="bandeau-periode mb-4" hidden>
+          <span class="ion-ios-calendar mr-2" aria-hidden="true"></span>
+          <span id="bandeau-periode-texte"></span>
+          <button type="button" class="btn btn-link p-0 ml-3" id="effacer-periode">Effacer les dates</button>
+        </div>
+        <div id="filtres-flotte" class="filtres-flotte text-center mb-5" role="group" aria-label="Filtrer les véhicules"></div>
+        <div id="grille-vehicules" class="row" aria-live="polite">
+          <div class="col-12 etat-message">Chargement de la flotte…</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="agences" class="ftco-section ftco-about">
+      <div class="container">
+        <div class="row no-gutters">
+          <div class="col-md-6 p-md-5 img img-2 d-flex justify-content-center align-items-center fond-apropos">
+          </div>
+          <div class="col-md-6 wrap-about ftco-animate">
+            <div class="heading-section heading-section-white pl-md-5">
+              <span class="subheading">Nos agences</span>
+              <h2 class="mb-4">Un réseau à votre service</h2>
+              <p>Chaque agence AutoLoc gère sa propre flotte et son équipe. Les informations ci-dessous sont lues dans la base de données à chaque visite.</p>
+              <div id="liste-agences" class="liste-agences">
+                <p class="etat-message etat-message-clair">Chargement des agences…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="chiffres" class="ftco-counter ftco-section img bg-light">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate">
+            <div class="block-18">
+              <div class="text text-border d-flex align-items-center">
+                <strong class="stat" data-stat="vehicules">0</strong>
+                <span>Véhicules <br>en flotte</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate">
+            <div class="block-18">
+              <div class="text text-border d-flex align-items-center">
+                <strong class="stat" data-stat="disponibles">0</strong>
+                <span>Prêts <br>à partir</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate">
+            <div class="block-18">
+              <div class="text text-border d-flex align-items-center">
+                <strong class="stat" data-stat="agences">0</strong>
+                <span>Agences <br>AutoLoc</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3 justify-content-center counter-wrap ftco-animate">
+            <div class="block-18">
+              <div class="text d-flex align-items-center">
+                <strong class="stat" data-stat="equipements">0</strong>
+                <span>Équipements <br>proposés</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="technique" class="ftco-section">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-md-7 text-center heading-section ftco-animate">
+            <span class="subheading">Sous le capot</span>
+            <h2 class="mb-3">Une architecture de production</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-lg-3">
+            <div class="services services-2 w-100 text-center">
+              <div class="icon d-flex align-items-center justify-content-center"><span class="ion-ios-cube"></span></div>
+              <div class="text w-100">
+                <h3 class="heading mb-2">Spring Boot &amp; JPA</h3>
+                <p>Neuf entités reliées, chargement LAZY partout et cascades justifiées une par une.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="services services-2 w-100 text-center">
+              <div class="icon d-flex align-items-center justify-content-center"><span class="ion-ios-lock"></span></div>
+              <div class="text w-100">
+                <h3 class="heading mb-2">Spring Security</h3>
+                <p>Rôles USER et ADMIN, mots de passe hachés avec BCrypt, vitrine publique en lecture seule.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="services services-2 w-100 text-center">
+              <div class="icon d-flex align-items-center justify-content-center"><span class="ion-ios-pulse"></span></div>
+              <div class="text w-100">
+                <h3 class="heading mb-2">Prometheus</h3>
+                <p>Métriques JVM et HTTP collectées toutes les cinq secondes via Actuator et Micrometer.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="services services-2 w-100 text-center">
+              <div class="icon d-flex align-items-center justify-content-center"><span class="ion-ios-speedometer"></span></div>
+              <div class="text w-100">
+                <h3 class="heading mb-2">Grafana</h3>
+                <p>Débit, latence p95, codes de réponse et mémoire suivis en temps réel.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ftco-section ftco-intro fond-intro">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row justify-content-end">
+          <div class="col-md-6 heading-section heading-section-white ftco-animate">
+            <h2 class="mb-3">Suivez AutoLoc en temps réel, requête par requête.</h2>
+            <a href="http://localhost:3000/d/autoloc-monitoring" class="btn btn-primary btn-lg mr-2 mb-2" target="_blank" rel="noopener">Tableau de bord Grafana</a>
+            <a href="http://localhost:9090/targets" class="btn btn-secondary btn-lg mb-2" target="_blank" rel="noopener">Cibles Prometheus</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="ftco-footer ftco-bg-dark ftco-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2"><a href="#accueil" class="logo">Auto<span>Loc</span></a></h2>
+              <p>Location de véhicules pour particuliers et professionnels. Projet du module UP ASI : architecture des systèmes d'information.</p>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4 ml-md-5">
+              <h2 class="ftco-heading-2">Explorer</h2>
+              <ul class="list-unstyled">
+                <li><a href="#flotte" class="py-2 d-block">La flotte</a></li>
+                <li><a href="#agences" class="py-2 d-block">Nos agences</a></li>
+                <li><a href="#plateforme" class="py-2 d-block">État de la plateforme</a></li>
+                <li><a href="#technique" class="py-2 d-block">Sous le capot</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2">API publique</h2>
+              <ul class="list-unstyled">
+                <li><a href="/api/public/vehicules" class="py-2 d-block" target="_blank" rel="noopener">/api/public/vehicules</a></li>
+                <li><a href="/api/public/agences" class="py-2 d-block" target="_blank" rel="noopener">/api/public/agences</a></li>
+                <li><a href="/actuator/health" class="py-2 d-block" target="_blank" rel="noopener">/actuator/health</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="ftco-footer-widget mb-4">
+              <h2 class="ftco-heading-2">Nous contacter</h2>
+              <div class="block-23 mb-3">
+                <ul>
+                  <li><span class="icon icon-map-marker"></span><span class="text" id="contact-adresse">37 quai de Grenelle, 75015 Paris</span></li>
+                  <li><span class="icon icon-phone"></span><span class="text" id="contact-telephone">01 23 45 67 89</span></li>
+                  <li><span class="icon icon-envelope"></span><span class="text">contact@autoloc.example</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+              Copyright &copy;<span id="annee"></span> AutoLoc · All rights reserved | This template is made with <i class="icon-heart color-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" rel="noopener">Colorlib</a>
+              <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+
+    <!-- Réservation d'un véhicule -->
+    <div class="modal fade modale-autoloc" id="modale-reservation" tabindex="-1" role="dialog" aria-labelledby="modale-reservation-titre" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modale-reservation-titre">Réserver</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <div id="reservation-etape-formulaire" class="row">
+              <div class="col-md-5 mb-3">
+                <div id="reservation-visuel" class="reservation-visuel rounded"></div>
+                <div class="reservation-fiche">
+                  <p id="reservation-fiche-vehicule" class="mb-1"></p>
+                  <p id="reservation-fiche-agence" class="mb-3"></p>
+                  <h6>Déjà réservé</h6>
+                  <ul id="reservation-periodes" class="list-unstyled periodes-reservees"></ul>
+                </div>
+              </div>
+              <div class="col-md-7">
+                <form id="form-reservation" novalidate>
+                  <div class="form-row">
+                    <div class="form-group col-6">
+                      <label for="resa-dateDebut">Départ</label>
+                      <input type="date" class="form-control" id="resa-dateDebut" name="dateDebut" required>
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group col-6">
+                      <label for="resa-dateFin">Retour</label>
+                      <input type="date" class="form-control" id="resa-dateFin" name="dateFin" required>
+                      <div class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                  <div id="reservation-devis" class="devis" aria-live="polite"></div>
+                  <p id="reservation-compte" class="reservation-compte"></p>
+                  <div class="form-row">
+                    <div class="form-group col-6">
+                      <label for="resa-prenom">Prénom</label>
+                      <input type="text" class="form-control" id="resa-prenom" name="prenom" maxlength="50" autocomplete="given-name" required>
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group col-6">
+                      <label for="resa-nom">Nom</label>
+                      <input type="text" class="form-control" id="resa-nom" name="nom" maxlength="50" autocomplete="family-name" required>
+                      <div class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="resa-email">Adresse e-mail</label>
+                    <input type="email" class="form-control" id="resa-email" name="email" maxlength="150" autocomplete="email" required>
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-6">
+                      <label for="resa-telephone">Téléphone <span class="facultatif">(facultatif)</span></label>
+                      <input type="tel" class="form-control" id="resa-telephone" name="telephone" maxlength="20" autocomplete="tel">
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group col-6">
+                      <label for="resa-numPermis">N° de permis</label>
+                      <input type="text" class="form-control" id="resa-numPermis" name="numPermis" maxlength="30" required>
+                      <div class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                  <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="resa-certification" required>
+                    <label class="form-check-label" for="resa-certification">Je certifie être titulaire d'un permis de conduire en cours de validité.</label>
+                    <div class="invalid-feedback">Cette certification est obligatoire.</div>
+                  </div>
+                  <div id="reservation-erreur" class="alert alert-danger" role="alert" hidden></div>
+                  <button type="submit" id="reservation-valider" class="btn btn-primary py-3 px-4 w-100" disabled>Confirmer la réservation</button>
+                  <p class="paiement-info mt-2 mb-0">Aucun paiement en ligne : vous réglez en agence au moment du départ.</p>
+                </form>
+              </div>
+            </div>
+            <div id="reservation-etape-confirmation" class="confirmation" hidden>
+              <div class="confirmation-icone" aria-hidden="true"><span class="ion-ios-checkmark-circle"></span></div>
+              <h3>Réservation confirmée</h3>
+              <p class="confirmation-numero">N° <strong id="confirmation-numero"></strong></p>
+              <div class="confirmation-code">
+                <span class="confirmation-code-libelle">Votre code de réservation</span>
+                <strong id="confirmation-code" class="code-acces"></strong>
+              </div>
+              <dl id="confirmation-recap" class="recapitulatif"></dl>
+              <p class="confirmation-note">Notez ce code et gardez-le pour vous : avec votre adresse e-mail, c'est lui qui permet de consulter ou d'annuler la réservation. L'agence ne vous le demandera jamais par téléphone.</p>
+            </div>
+          </div>
+          <div class="modal-footer" id="reservation-pied" hidden>
+            <button type="button" class="btn btn-secondary" id="confirmation-voir">Voir ma réservation</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consultation / annulation par le client -->
+    <div class="modal fade modale-autoloc" id="modale-ma-reservation" tabindex="-1" role="dialog" aria-labelledby="modale-ma-reservation-titre" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modale-ma-reservation-titre">Ma réservation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-consultation" novalidate>
+              <div class="form-row">
+                <div class="form-group col-md-5">
+                  <label for="consult-code">Code de réservation</label>
+                  <input type="text" class="form-control code-acces-saisie" id="consult-code" name="code" maxlength="14"
+                         autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCDE-FGHJK" required>
+                  <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group col-md-7">
+                  <label for="consult-email">Adresse e-mail</label>
+                  <input type="email" class="form-control" id="consult-email" name="email" autocomplete="email" required>
+                  <div class="invalid-feedback"></div>
+                </div>
+              </div>
+              <div id="consultation-erreur" class="alert alert-danger" role="alert" hidden></div>
+              <button type="submit" class="btn btn-primary w-100">Afficher ma réservation</button>
+            </form>
+            <div id="consultation-resultat" class="consultation-resultat" hidden></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compte client : connexion, inscription, mot de passe oublié, mes réservations -->
+    <div class="modal fade modale-autoloc" id="modale-compte" tabindex="-1" role="dialog" aria-labelledby="modale-compte-titre" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modale-compte-titre">Mon compte</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+
+            <div id="compte-panneau-connexion">
+              <div id="compte-connexion-info" class="alert alert-info" role="status" hidden></div>
+              <form id="form-compte-connexion" novalidate>
+                <div class="form-group">
+                  <label for="compte-email">Adresse e-mail</label>
+                  <input type="email" class="form-control" id="compte-email" name="email" maxlength="150" autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                  <label for="compte-motdepasse">Mot de passe</label>
+                  <input type="password" class="form-control" id="compte-motdepasse" name="motDePasse" maxlength="64" autocomplete="current-password" required>
+                </div>
+                <div id="compte-connexion-erreur" class="alert alert-danger" role="alert" hidden></div>
+                <button type="submit" id="compte-connexion-valider" class="btn btn-primary w-100 py-2">Se connecter</button>
+              </form>
+              <div class="compte-liens">
+                <button type="button" class="btn btn-link p-0" data-panneau="oubli">Mot de passe oublié ?</button>
+                <button type="button" class="btn btn-link p-0" data-panneau="inscription">Créer un compte</button>
+              </div>
+              <p class="compte-note">Le compte est facultatif : vous pouvez aussi réserver sans compte, avec le code de réservation remis à la confirmation.</p>
+            </div>
+
+            <div id="compte-panneau-inscription" hidden>
+              <p class="text-muted">Indiquez votre adresse e-mail : vous recevrez un lien pour la confirmer, puis vous compléterez vos informations et choisirez votre mot de passe.</p>
+              <form id="form-compte-inscription" novalidate>
+                <div class="form-group">
+                  <label for="inscription-email">Adresse e-mail</label>
+                  <input type="email" class="form-control" id="inscription-email" name="email" maxlength="150" autocomplete="email" required>
+                  <div class="invalid-feedback"></div>
+                </div>
+                <div id="inscription-erreur" class="alert alert-danger" role="alert" hidden></div>
+                <button type="submit" id="inscription-envoyer" class="btn btn-primary w-100 py-2">Recevoir le lien</button>
+              </form>
+              <div id="inscription-resultat" class="alert alert-success" role="status" hidden></div>
+              <div class="compte-liens">
+                <button type="button" class="btn btn-link p-0" data-panneau="connexion">J'ai déjà un compte</button>
+              </div>
+              <p class="compte-note">Vous avez déjà réservé sans compte avec cette adresse ? Vos réservations seront rattachées à votre nouveau compte.</p>
+            </div>
+
+            <div id="compte-panneau-oubli" hidden>
+              <p class="text-muted">Indiquez l'adresse e-mail de votre compte : vous recevrez un lien pour choisir un nouveau mot de passe.</p>
+              <form id="form-compte-oubli" novalidate>
+                <div class="form-group">
+                  <label for="oubli-email">Adresse e-mail</label>
+                  <input type="email" class="form-control" id="oubli-email" name="email" maxlength="150" autocomplete="email" required>
+                  <div class="invalid-feedback"></div>
+                </div>
+                <div id="oubli-erreur" class="alert alert-danger" role="alert" hidden></div>
+                <button type="submit" id="oubli-envoyer" class="btn btn-primary w-100 py-2">Recevoir le lien</button>
+              </form>
+              <div id="oubli-resultat" class="alert alert-success" role="status" hidden></div>
+              <div class="compte-liens">
+                <button type="button" class="btn btn-link p-0" data-panneau="connexion">Retour à la connexion</button>
+              </div>
+            </div>
+
+            <div id="compte-panneau-espace" hidden>
+              <div class="compte-entete">
+                <div>
+                  <h4 id="compte-nom" class="mb-1"></h4>
+                  <p id="compte-details" class="text-muted mb-0"></p>
+                </div>
+                <div class="compte-entete-actions">
+                  <button type="button" id="compte-reserver" class="btn btn-primary btn-sm">Réserver un véhicule</button>
+                  <button type="button" id="compte-deconnexion" class="btn btn-outline-secondary btn-sm">Se déconnecter</button>
+                </div>
+              </div>
+              <div id="compte-reservations" aria-live="polite"></div>
+              <p class="compte-note">Par sécurité, votre mot de passe n'est conservé nulle part dans le navigateur : fermer ou recharger la page vous déconnecte.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- loader -->
+    <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#1089ff"/></svg></div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.easing.1.3.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/jquery.animateNumber.min.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
+    <script src="js/jquery.timepicker.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/commun.js"></script>
+    <script src="js/compte.js"></script>
+    <script src="js/autoloc.js"></script>
+  </body>
+</html>

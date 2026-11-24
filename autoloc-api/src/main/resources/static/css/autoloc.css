@@ -1,0 +1,917 @@
+/* ==========================================================================
+   AutoLoc : surcouche du template Carbook (Colorlib)
+   Charte : bleu #1089ff, vert #01d28e, ambre #f5a623, police Poppins
+   ========================================================================== */
+
+:root {
+  --autoloc-bleu: #1089ff;
+  --autoloc-vert: #01d28e;
+  --autoloc-ambre: #f5a623;
+  --autoloc-gris: #6c757d;
+  --autoloc-rouge: #e5484d;
+}
+
+/* ---------- État de la plateforme (dans l'encadré bleu) ---------- */
+.statut-liste li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.statut-liste li:last-child {
+  border-bottom: none;
+  margin-bottom: 18px;
+}
+
+.statut-liste .libelle {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.statut-liste .libelle {
+  padding-right: 12px;
+}
+
+.statut-liste .valeur {
+  font-weight: 600;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.pastille {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.pastille::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pastille-up { color: #fff; background: var(--autoloc-vert); }
+.pastille-down { color: #fff; background: var(--autoloc-rouge); }
+.pastille-inconnue { color: #fff; }
+
+/* ---------- Filtres de la flotte ---------- */
+.filtres-flotte .filtre {
+  border: 1px solid var(--autoloc-bleu);
+  background: transparent;
+  color: var(--autoloc-bleu);
+  border-radius: 30px;
+  padding: 6px 18px;
+  margin: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.filtres-flotte .filtre:hover,
+.filtres-flotte .filtre:focus-visible {
+  background: rgba(16, 137, 255, 0.08);
+  outline: none;
+}
+
+.filtres-flotte .filtre.actif {
+  background: var(--autoloc-bleu);
+  color: #fff;
+}
+
+.filtres-flotte .filtre .compte {
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+/* ---------- Cartes véhicule ---------- */
+.carte-vehicule {
+  animation: apparition 0.5s ease both;
+}
+
+.carte-vehicule .img {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.badge-statut {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.photo-nc {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.badge-statut.statut-DISPONIBLE { background: var(--autoloc-vert); }
+.badge-statut.statut-LOUE { background: var(--autoloc-ambre); }
+.badge-statut.statut-MAINTENANCE { background: var(--autoloc-gris); }
+
+.carte-vehicule.indisponible .img {
+  filter: grayscale(35%);
+}
+
+.carte-vehicule .text h2 {
+  color: #000;
+}
+
+.carte-vehicule .immatriculation {
+  display: inline-block;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 1px 8px;
+  border: 2px solid #1d3b8c;
+  border-radius: 4px;
+  color: #1d3b8c;
+  background: #fff;
+}
+
+.carte-vehicule .equipements {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.carte-vehicule .equipements li {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 30px;
+  background: rgba(1, 210, 142, 0.12);
+  color: #018a5e;
+}
+
+.carte-vehicule .agence {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 0;
+}
+
+.carte-vehicule .agence span {
+  color: var(--autoloc-bleu);
+  margin-right: 4px;
+}
+
+@keyframes apparition {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Messages d'état (chargement, vide, erreur) ---------- */
+.etat-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.etat-message.erreur {
+  color: var(--autoloc-rouge);
+}
+
+.etat-message-clair {
+  color: rgba(255, 255, 255, 0.85);
+  text-align: left;
+  padding: 0;
+}
+
+/* ---------- Agences (bandeau vert) ---------- */
+.liste-agences .agence-carte {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  color: #fff;
+}
+
+.liste-agences .agence-carte h3 {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.liste-agences .agence-carte p {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.liste-agences .agence-carte .flotte-agence {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 12px;
+  border-radius: 30px;
+  background: #fff;
+  color: #018a5e;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ---------- Chiffres clés (mêmes styles que les compteurs du template) ---------- */
+.ftco-counter .text strong.stat {
+  font-weight: 300;
+  font-size: 50px;
+  color: var(--autoloc-bleu);
+}
+
+/* ---------- Bandeau monitoring ---------- */
+.ftco-intro .btn {
+  margin-top: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carte-vehicule { animation: none; }
+}
+
+/* ==========================================================================
+   Réservation en ligne
+   ========================================================================== */
+
+/* ---------- Formulaire de recherche (encadré bleu) ---------- */
+.request-form input[type="date"] {
+  color-scheme: dark;
+}
+
+.request-form select option {
+  color: #000;
+}
+
+.recherche-erreur {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--autoloc-rouge) !important;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.statut-compact li {
+  padding: 6px 0;
+}
+
+.statut-compact .libelle {
+  font-size: 11px;
+}
+
+.statut-compact .valeur {
+  font-size: 14px;
+}
+
+.btn.btn-outline-primary {
+  border: 1px solid var(--autoloc-bleu);
+  color: var(--autoloc-bleu);
+  background: transparent;
+}
+
+.btn.btn-outline-primary:hover {
+  background: var(--autoloc-bleu);
+  color: #fff;
+}
+
+/* ---------- Bandeau de période au-dessus de la flotte ---------- */
+.bandeau-periode {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 30px;
+  background: rgba(16, 137, 255, 0.08);
+  color: #0b5fb3;
+  font-weight: 500;
+}
+
+.bandeau-periode .btn-link {
+  color: var(--autoloc-bleu);
+  font-weight: 600;
+}
+
+/* ---------- Cartes : total sur la période et bouton ---------- */
+.total-periode {
+  margin: -4px 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #018a5e;
+}
+
+.carte-vehicule .bouton-reserver:disabled {
+  background: #e9ecef !important;
+  border-color: #e9ecef !important;
+  color: rgba(0, 0, 0, 0.45) !important;
+  cursor: not-allowed;
+}
+
+/* ---------- Fenêtres modales ---------- */
+.modale-autoloc .modal-content {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.modale-autoloc .modal-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.modale-autoloc .modal-title {
+  font-weight: 600;
+}
+
+.modale-autoloc label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.modale-autoloc .form-control {
+  font-size: 14px;
+}
+
+.modale-autoloc .facultatif {
+  color: rgba(0, 0, 0, 0.45);
+  font-weight: 400;
+}
+
+.reservation-visuel {
+  height: 170px;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 14px;
+}
+
+.reservation-fiche p {
+  font-size: 14px;
+  color: #333;
+}
+
+.reservation-fiche h6 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.periodes-reservees li {
+  font-size: 13px;
+  padding: 4px 10px;
+  margin-bottom: 4px;
+  border-left: 3px solid var(--autoloc-ambre);
+  background: rgba(245, 166, 35, 0.08);
+}
+
+.periodes-reservees li.text-muted {
+  border-left-color: var(--autoloc-vert);
+  background: rgba(1, 210, 142, 0.08);
+}
+
+/* Devis en direct */
+.devis {
+  min-height: 0;
+  margin-bottom: 14px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.devis:empty {
+  display: none;
+}
+
+.devis-chargement {
+  padding: 10px 14px;
+  background: #f4f6f8;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.devis-ok {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(1, 210, 142, 0.1);
+  color: #016b48;
+}
+
+.devis-ok .devis-total {
+  font-size: 22px;
+  font-weight: 700;
+  color: #018a5e;
+}
+
+.devis-indisponible {
+  padding: 10px 14px;
+  background: rgba(229, 72, 77, 0.08);
+  color: #b4232a;
+}
+
+.paiement-info {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+/* Confirmation */
+.confirmation {
+  text-align: center;
+  padding: 10px 10px 0;
+}
+
+.confirmation-icone {
+  font-size: 64px;
+  line-height: 1;
+  color: var(--autoloc-vert);
+}
+
+.confirmation h3 {
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+.confirmation-numero {
+  font-size: 18px;
+}
+
+.confirmation-numero strong {
+  font-size: 26px;
+  color: var(--autoloc-bleu);
+}
+
+.confirmation-note {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.55);
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.recapitulatif {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 18px;
+  text-align: left;
+  max-width: 480px;
+  margin: 18px auto;
+  font-size: 14px;
+}
+
+.recapitulatif dt {
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.recapitulatif dd {
+  margin: 0;
+  color: #111;
+}
+
+.consultation-resultat .recapitulatif {
+  margin: 0;
+  max-width: none;
+}
+
+.liste-paiements li {
+  font-size: 13px;
+  padding: 3px 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+/* Statut d'une réservation */
+.badge-reservation {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-confirmee { background: rgba(16, 137, 255, 0.12); color: #0b5fb3; }
+.badge-attente { background: rgba(245, 166, 35, 0.15); color: #9a5f00; }
+.badge-terminee { background: rgba(1, 210, 142, 0.14); color: #016b48; }
+.badge-annulee { background: rgba(108, 117, 125, 0.14); color: #495057; }
+
+/* ==========================================================================
+   Espace agence
+   ========================================================================== */
+
+.page-admin {
+  background: #f4f6f8;
+  min-height: 100vh;
+}
+
+.admin-nav {
+  padding: 14px 0;
+}
+
+.admin-nav .navbar-brand span {
+  color: var(--autoloc-vert);
+}
+
+.admin-nav-sous-titre {
+  font-size: 13px;
+  font-weight: 400;
+  opacity: 0.75;
+  margin-left: 8px;
+}
+
+.admin-utilisateur {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+}
+
+.admin-contenu {
+  padding-top: 40px;
+  padding-bottom: 60px;
+}
+
+.admin-connexion {
+  max-width: 420px;
+  margin: 40px auto;
+}
+
+.indicateur {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px 20px;
+  border-top: 4px solid var(--autoloc-bleu);
+  box-shadow: 0 5px 12px -1px rgba(0, 0, 0, 0.05);
+  height: 100%;
+}
+
+.indicateur-vert { border-top-color: var(--autoloc-vert); }
+.indicateur-ambre { border-top-color: var(--autoloc-ambre); }
+.indicateur-gris { border-top-color: var(--autoloc-gris); }
+
+.indicateur-titre {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.indicateur-valeur {
+  display: block;
+  font-size: 28px;
+  font-weight: 600;
+  color: #111;
+  margin: 4px 0;
+}
+
+.indicateur-detail {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.admin-outils {
+  gap: 10px;
+}
+
+.admin-recherche {
+  max-width: 260px;
+}
+
+.admin-table {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 12px -1px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+}
+
+.admin-table thead th {
+  border-top: none;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 600;
+  background: #fafbfc;
+}
+
+.admin-table td {
+  vertical-align: middle;
+}
+
+/* Une réservation annulée reste lisible mais passe au second plan ; la cellule
+   d'actions n'est pas atténuée pour ne pas faire croire à un bouton désactivé. */
+.admin-table .ligne-annulee td:not(:last-child) {
+  opacity: 0.55;
+}
+
+.admin-table .colonne-montant {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-table .colonne-paiement {
+  padding-left: 24px;
+  min-width: 190px;
+}
+
+.admin-table .colonne-paiement small {
+  white-space: nowrap;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.admin-table .immatriculation {
+  display: inline-block;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0 6px;
+  border: 2px solid #1d3b8c;
+  border-radius: 4px;
+  color: #1d3b8c;
+}
+
+.font-weight-500 {
+  font-weight: 500;
+}
+
+.paiement-cellule {
+  min-width: 160px;
+}
+
+.barre-paiement {
+  height: 6px;
+  border-radius: 6px;
+  background: #e9ecef;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.barre-paiement-remplie {
+  height: 100%;
+  background: var(--autoloc-ambre);
+}
+
+.barre-paiement-remplie.complete {
+  background: var(--autoloc-vert);
+}
+
+.actions-admin {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.sans-coupure {
+  white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+  .admin-nav > .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .admin-nav .navbar-brand {
+    font-size: 20px;
+  }
+
+  .admin-nav-sous-titre {
+    display: none;
+  }
+
+  .indicateur-valeur {
+    font-size: 22px;
+  }
+
+  .admin-recherche {
+    max-width: none;
+    width: 100%;
+  }
+}
+
+/* ---------- Mot de passe oublié ---------- */
+
+.lien-discret {
+  padding: 0;
+  font-size: 13px;
+  border: 0;
+  vertical-align: baseline;
+}
+
+.regles-mdp {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.regles-mdp li {
+  position: relative;
+  padding-left: 22px;
+  line-height: 1.8;
+}
+
+.regles-mdp li::before {
+  content: "○";
+  position: absolute;
+  left: 2px;
+}
+
+.regles-mdp li.ok {
+  color: #0f8a5f;
+}
+
+.regles-mdp li.ok::before {
+  content: "✓";
+  font-weight: 700;
+}
+
+/* ---------- Images de fond du template ----------
+   Sorties des attributs style="" du HTML : la Content-Security-Policy interdit les styles en ligne. */
+
+.fond-accueil {
+  background-image: url("../images/bg_1.jpg");
+}
+
+.fond-apropos {
+  background-image: url("../images/about.jpg");
+}
+
+.fond-intro {
+  background-image: url("../images/bg_2.jpg");
+}
+
+.texte-intro {
+  font-size: 18px;
+}
+
+/* ---------- Code de réservation ---------- */
+
+.confirmation-code {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 4px 0 18px;
+  padding: 10px 22px;
+  border: 2px dashed var(--autoloc-bleu);
+  border-radius: 10px;
+  background: rgba(16, 137, 255, 0.06);
+}
+
+.confirmation-code-libelle {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.code-acces {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 24px;
+  letter-spacing: 0.12em;
+  color: #000;
+}
+
+.code-acces-saisie {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- Compte client (fenêtre « Mon compte », page d'inscription) ---------- */
+.compte-liens {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.compte-note {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.compte-entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.compte-entete h4 {
+  font-size: 20px;
+}
+
+.compte-entete-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.groupe-reservations + .groupe-reservations {
+  margin-top: 18px;
+}
+
+.groupe-reservations-titre {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(0, 0, 0, 0.55);
+  margin-bottom: 8px;
+}
+
+.groupe-reservations-vide {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.45);
+  margin: 0;
+}
+
+.resa-compte {
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-left: 3px solid var(--autoloc-bleu);
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.resa-compte-annulee {
+  border-left-color: var(--autoloc-gris);
+  opacity: 0.75;
+}
+
+.resa-compte-entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.resa-compte-entete strong {
+  color: #000;
+}
+
+.resa-compte-ligne {
+  margin: 0;
+  font-size: 14px;
+}
+
+.resa-compte-actions {
+  margin-top: 8px;
+}
+
+.reservation-compte {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.75);
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(16, 137, 255, 0.06);
+}
+
+.reservation-compte .btn-link {
+  font-size: 14px;
+  vertical-align: baseline;
+}
+
+/* Le modèle impose « background: #fff !important » à tous les champs : sélecteur plus précis, même priorité. */
+.modale-autoloc .form-control[readonly] {
+  background: #f1f3f5 !important;
+  color: #495057 !important;
+  cursor: default;
+}
+
+.page-inscription {
+  max-width: 560px;
+}
