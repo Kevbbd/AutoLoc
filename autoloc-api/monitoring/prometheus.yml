@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: "autoloc-api"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      # L'application tourne dans IntelliJ, sur la machine hôte (hors Docker)
+      - targets: ["host.docker.internal:8080"]

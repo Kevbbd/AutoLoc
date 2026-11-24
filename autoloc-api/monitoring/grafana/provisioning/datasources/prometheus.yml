@@ -1,0 +1,11 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    uid: autoloc-prometheus
+    type: prometheus
+    access: proxy
+    # Nom du service Docker, pas localhost : Grafana et Prometheus sont dans le même réseau Compose
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true

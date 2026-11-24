@@ -1,0 +1,40 @@
+services:
+  prometheus:
+    # Versions figées pour un TP reproductible (éviter :latest)
+    image: prom/prometheus:v3.15.1
+    container_name: autoloc-prometheus
+    # 127.0.0.1 : accessible depuis ce PC uniquement, pas depuis le reste du réseau (Wi-Fi de l'école…)
+    ports:
+      - "127.0.0.1:9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    # Rend host.docker.internal disponible aussi sous Linux (déjà fourni par Docker Desktop)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    image: grafana/grafana:13.2.6
+    container_name: autoloc-grafana
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      # Theme clair assorti a la vitrine, et tableau de bord AutoLoc comme page d'accueil
+      GF_USERS_DEFAULT_THEME: light
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/autoloc-monitoring.json
+    volumes:
+      # Source de données Prometheus et tableau de bord AutoLoc créés automatiquement
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+
+  mailpit:
+    # Serveur SMTP de test : capture les e-mails de l'application (mot de passe oublié)
+    # sans rien envoyer sur Internet. Boîte de réception : http://localhost:8025
+    image: axllent/mailpit:v1.34.0
+    container_name: autoloc-mailpit
+    # Indispensable ici : la boîte Mailpit contient les liens de réinitialisation de mot de passe.
+    # Ouverte au réseau, n'importe quel voisin pourrait les lire et prendre le compte admin.
+    ports:
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
