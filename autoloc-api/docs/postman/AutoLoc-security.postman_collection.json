@@ -1,0 +1,442 @@
+{
+  "info": {
+    "name": "AutoLoc — Sécurité et monitoring",
+    "description": "Matrice 200 / 401 / 403 du TP Spring Security + endpoints Actuator. Lancer la collection avec le Runner : chaque requête vérifie son code de statut.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /api/public/ping — anonyme → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 200 attendu\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "noauth"
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/public/ping",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "public",
+            "ping"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/public/ping — student → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 200 attendu\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "student",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{studentPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/public/ping",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "public",
+            "ping"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/public/ping — admin → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 200 attendu\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{adminPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/public/ping",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "public",
+            "ping"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/hello — anonyme → 401",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 401 attendu\", () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "noauth"
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/hello",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "hello"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/hello — student → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 200 attendu\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "student",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{studentPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/hello",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "hello"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/hello — admin → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 200 attendu\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{adminPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/hello",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "hello"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/admin/report — anonyme → 401",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 401 attendu\", () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "noauth"
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admin",
+            "report"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/admin/report — student → 403",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 403 attendu\", () => pm.response.to.have.status(403));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "student",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{studentPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admin",
+            "report"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/admin/report — admin → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 200 attendu\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{adminPassword}}",
+              "type": "string"
+            }
+          ]
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/report",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admin",
+            "report"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /actuator/health — anonyme → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 200 attendu\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "noauth"
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/actuator/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "actuator",
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /actuator/prometheus — anonyme → 200",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Statut 200 attendu\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "noauth"
+        },
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/actuator/prometheus",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "actuator",
+            "prometheus"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "studentPassword",
+      "value": "student123"
+    },
+    {
+      "key": "adminPassword",
+      "value": "admin123"
+    }
+  ]
+}
