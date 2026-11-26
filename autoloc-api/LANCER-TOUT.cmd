@@ -89,6 +89,7 @@ echo.
 echo Termine.
 echo   Vitrine et reservation : http://localhost:8080
 echo   Espace agence          : http://localhost:8080/admin.html  ^(admin / admin123^)
+echo   Swagger UI (tests API) : http://localhost:8080/swagger-ui.html  ^(Authorize : student / student123 ou admin / admin123^)
 echo   L'API continue de tourner dans la fenetre "AutoLoc API" (fermez-la pour l'arreter).
 echo.
 echo   Ouverture du site dans le navigateur...

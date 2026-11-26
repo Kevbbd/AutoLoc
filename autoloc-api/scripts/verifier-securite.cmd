@@ -29,6 +29,8 @@ call :check student "student:student123" /api/admin/reservations 403
 call :check admin   "admin:admin123"     /api/admin/reservations 200
 call :check anonyme ""                  /reinitialisation.html 200
 call :check anonyme ""                  /inscription.html    200
+call :check anonyme ""                  /swagger-ui/index.html 200
+call :check anonyme ""                  /v3/api-docs         200
 call :check anonyme ""                  /api/client/profil   401
 call :check student "student:student123" /api/client/profil   403
 call :check admin   "admin:admin123"     /api/client/profil   403

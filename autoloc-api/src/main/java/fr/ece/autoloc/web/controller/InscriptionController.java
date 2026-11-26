@@ -6,6 +6,7 @@ import fr.ece.autoloc.web.dto.FinalisationInscriptionRequest;
 import fr.ece.autoloc.web.dto.InscriptionDto;
 import fr.ece.autoloc.web.dto.JetonRequest;
 import fr.ece.autoloc.web.dto.MessageDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /** Création d'un compte client, en deux temps (voir CompteClientService). Routes publiques. */
+@Tag(name = "Inscription client (public)", description = "Création de compte confirmée par e-mail.")
 @RestController
 @RequestMapping("/api/public/clients/inscription")
 @RequiredArgsConstructor

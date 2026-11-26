@@ -6,6 +6,7 @@ import fr.ece.autoloc.web.dto.JetonRequest;
 import fr.ece.autoloc.web.dto.MessageDto;
 import fr.ece.autoloc.web.dto.ReinitialisationDto;
 import fr.ece.autoloc.web.dto.ReinitialisationRequest;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /** Mot de passe oublié (agence et clients). Routes publiques : l'utilisateur, par définition, ne peut pas se connecter. */
+@Tag(name = "Mot de passe oublié (public)", description = "Lien de réinitialisation envoyé par e-mail.")
 @RestController
 @RequestMapping("/api/public/mot-de-passe")
 @RequiredArgsConstructor

@@ -9,7 +9,7 @@
 - un **site web** pour trouver une voiture disponible à vos dates et la réserver en quelques clics ;
 - un **espace client** pour retrouver toutes ses réservations ;
 - un **espace agence** pour suivre les locations, encaisser les paiements et enregistrer les retours ;
-- tout ce qu'il faut « sous le capot » pour que cela fonctionne de façon **fiable et sûre** : une base de données, la sécurité des comptes, la surveillance de l'application et **176 tests automatiques**.
+- tout ce qu'il faut « sous le capot » pour que cela fonctionne de façon **fiable et sûre** : une base de données, la sécurité des comptes, la surveillance de l'application et **180 tests automatiques**.
 
 Ce document s'adresse à tout le monde : vous n'avez pas besoin d'être développeur pour le lire. Les mots techniques sont expliqués dans le [petit lexique](#14-petit-lexique) à la fin.
 
@@ -182,7 +182,7 @@ Le script enchaîne 6 étapes et écrit le détail de chacune dans le dossier `a
 |---|---|
 | 0 — Arrêt | Arrête une ancienne version encore ouverte. |
 | 1 — Diagnostic | Vérifie que Java, MySQL, Docker et Git sont présents. |
-| 2 — Compilation et tests | Construit l'application et lance les **176 tests**. Si un test échoue, le script s'arrête. |
+| 2 — Compilation et tests | Construit l'application et lance les **180 tests**. Si un test échoue, le script s'arrête. |
 | 3 — Démarrage | Lance l'application dans une fenêtre réduite **« AutoLoc API »**. |
 | 4 — Base de données | Affiche les tables et les dernières réservations (`logs\base.log`). |
 | 5 — Sécurité | Rejoue la matrice des droits d'accès : qui peut ouvrir quelle page (`logs\securite.log`). |
@@ -194,6 +194,7 @@ Le script enchaîne 6 étapes et écrit le détail de chacune dans le dossier `a
 |---|---|
 | <http://localhost:8080> | Le site AutoLoc. |
 | <http://localhost:8080/admin.html> | L'espace agence. |
+| <http://localhost:8080/swagger-ui.html> | Swagger UI : la documentation interactive de l'API, pour tester chaque route (bouton « Authorize » : `student` / `student123` ou `admin` / `admin123`). |
 | <http://localhost:8025> | Mailpit : les e-mails envoyés par l'application. |
 | <http://localhost:3000> | Grafana : les tableaux de bord (identifiants `admin` / `admin`). |
 | <http://localhost:9090> | Prometheus : la collecte des mesures. |
@@ -293,6 +294,7 @@ Le **verrou** est important : si deux personnes réservent la même voiture au m
 | **Lombok** | Génère automatiquement le code répétitif (accesseurs, constructeurs). |
 | **Actuator + Micrometer** | Exposent l'état de santé et les mesures de l'application. |
 | **Prometheus + Grafana** | Collectent ces mesures et les affichent en graphiques. |
+| **springdoc-openapi / Swagger UI** | Génère la documentation de l'API à partir du code et permet d'essayer chaque route dans le navigateur. |
 | **Mailpit** | Boîte e-mail de test. |
 | **Docker Compose** | Lance Prometheus, Grafana et Mailpit en une commande. |
 | **HTML, CSS, JavaScript** (modèle Carbook, Bootstrap, jQuery) | Les pages du site. |
@@ -375,6 +377,12 @@ La sécurité a fait l'objet d'un **audit complet**. Voici, en termes simples, c
 
 En production, ces points seraient corrigés. La liste détaillée se trouve dans [`autoloc-api/docs/security-notes.md`](autoloc-api/docs/security-notes.md).
 
+### Vérifier les droits soi-même avec Swagger UI
+
+L'application démarrée, ouvrez <http://localhost:8080/swagger-ui.html>. Dans le groupe **« Démonstration du TP »**, cliquez sur **Execute** sous une route : sans compte, `/api/hello` répond **401**. Cliquez ensuite sur **Authorize**, connectez-vous avec `student` / `student123`, puis réessayez : `/api/hello` répond **200** et `/api/admin/report` répond **403**, car student n'est pas administrateur. Avec `admin` / `admin123`, `/api/admin/report` répond **200**.
+
+![Swagger UI : student reçoit 403 sur la route réservée à l'administrateur](captures/17-swagger-report-student-403.jpg)
+
 ---
 
 ## 8. La surveillance de l'application
@@ -385,13 +393,17 @@ Une application qui tourne doit être **surveillée** : est-elle en ligne ? rép
 2. **Prometheus** : il relève ces mesures **toutes les 5 secondes** et les garde en mémoire.
 3. **Grafana** : il les affiche dans un **tableau de bord** prêt à l'emploi, *AutoLoc — Application Monitoring* (menu *Dashboards › AutoLoc*).
 
+![Prometheus : la cible autoloc-api est à l'état UP](captures/19-prometheus-targets.jpg)
+
+![Grafana : le tableau de bord AutoLoc — Application Monitoring](captures/20-grafana-dashboard.jpg)
+
 Les trois se lancent ensemble avec Docker (étape 6 de `LANCER-TOUT.cmd`). Le détail des mesures et des requêtes se trouve dans [`autoloc-api/docs/monitoring-notes.md`](autoloc-api/docs/monitoring-notes.md).
 
 ---
 
 ## 9. Les tests automatiques
 
-Le projet contient **176 tests automatiques**. Ils vérifient tout seuls, en une minute environ, que l'application se comporte comme prévu. Ils sont lancés à chaque `LANCER-TOUT.cmd`, et peuvent l'être seuls avec `scripts\tests.cmd` ou `./mvnw test`.
+Le projet contient **180 tests automatiques**. Ils vérifient tout seuls, en une minute environ, que l'application se comporte comme prévu. Ils sont lancés à chaque `LANCER-TOUT.cmd`, et peuvent l'être seuls avec `scripts\tests.cmd` ou `./mvnw test`.
 
 | Type de test | Exemples de ce qui est vérifié |
 |---|---|
@@ -409,7 +421,7 @@ Les tests utilisent une base **H2 en mémoire** : ils ne touchent jamais à vos 
 ```
 AutoLoc/
 ├── README.md                    ce document
-├── captures/                    les images de ce document
+├── captures/                    les captures d'écran : site, Swagger UI, Prometheus et Grafana
 └── autoloc-api/                 l'application
     ├── LANCER-TOUT.cmd          tout lancer et tout vérifier, en un double-clic (Windows)
     ├── PUBLIER-SUR-GITHUB.cmd   publier le projet sur GitHub
@@ -426,11 +438,11 @@ AutoLoc/
         │   ├── service/         les règles métier
         │   ├── web/             les points d'entrée de l'API
         │   ├── securite/        le blocage après échecs et la limitation des formulaires
-        │   └── config/          la sécurité, les comptes et les données de démonstration
+        │   └── config/          la sécurité, la documentation Swagger, les comptes et les données de démonstration
         ├── main/resources/
         │   ├── application.properties   les réglages
         │   └── static/          les pages du site (HTML, CSS, JavaScript, images)
-        └── test/                les 176 tests automatiques
+        └── test/                les 180 tests automatiques
 ```
 
 ---
@@ -441,9 +453,9 @@ AutoLoc/
 |---|---|---|
 | **Workshop 1** : le socle | Projet Spring Boot, connexion à MySQL, première entité `Vehicule` | `pom.xml`, `domain/Vehicule.java` |
 | **Workshop 2** : les entités et associations JPA | 9 entités reliées entre elles (agence, véhicule, client, réservation, contrat, paiement…), stratégies de chargement | `domain/`, `repository/`, [`docs/fetch-strategy.md`](autoloc-api/docs/fetch-strategy.md) |
-| **Spring Security** | Connexion, rôles USER et ADMIN, routes publiques et protégées, matrice 200 / 401 / 403 | `config/SecurityConfig.java`, [`docs/security-notes.md`](autoloc-api/docs/security-notes.md) |
+| **Spring Security** | Connexion, rôles USER et ADMIN, routes publiques et protégées, matrice 200 / 401 / 403 | `config/SecurityConfig.java`, [`docs/security-notes.md`](autoloc-api/docs/security-notes.md), Swagger UI |
 | **Session 3** : Docker et monitoring | Actuator, Prometheus, Grafana avec tableau de bord automatique | `docker-compose.yml`, `monitoring/`, [`docs/monitoring-notes.md`](autoloc-api/docs/monitoring-notes.md) |
-| **Au-delà du TP** | Site de réservation complet, espace agence, comptes clients, mot de passe oublié, audit de sécurité, 176 tests | `static/`, `service/`, [`docs/reservation.md`](autoloc-api/docs/reservation.md) |
+| **Au-delà du TP** | Site de réservation complet, espace agence, comptes clients, mot de passe oublié, audit de sécurité, 180 tests | `static/`, `service/`, [`docs/reservation.md`](autoloc-api/docs/reservation.md) |
 
 ---
 

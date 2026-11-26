@@ -5,6 +5,7 @@ import fr.ece.autoloc.service.compte.CompteClientService;
 import fr.ece.autoloc.web.dto.ClientProfilDto;
 import fr.ece.autoloc.web.dto.ReservationCompteRequest;
 import fr.ece.autoloc.web.dto.ReservationDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.util.List;
  * c'est toujours l'adresse authentifiée ({@link Principal#getName()}). Il ne peut donc ni lire ni modifier
  * les réservations d'un autre.
  */
+@Tag(name = "Espace client (CLIENT)", description = "Profil et réservations du client connecté.")
 @RestController
 @RequestMapping("/api/client")
 @RequiredArgsConstructor

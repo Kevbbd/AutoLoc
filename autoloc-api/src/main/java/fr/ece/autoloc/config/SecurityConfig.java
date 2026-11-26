@@ -7,15 +7,19 @@ import fr.ece.autoloc.securite.ProtectionConnexion;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
@@ -42,7 +46,69 @@ public class SecurityConfig {
 
     static final String PERMISSIONS_POLICY = "camera=(), microphone=(), geolocation=(), payment=(), usb=()";
 
+    /**
+     * Pages de Swagger UI : comme la politique principale, aucun script en ligne ni eval. Seule différence :
+     * les styles en ligne sont autorisés, car l'interface de Swagger UI en génère.
+     */
+    static final String CONTENT_SECURITY_POLICY_DOCUMENTATION = String.join("; ",
+            "default-src 'self'",
+            "script-src 'self'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data:",
+            "font-src 'self' data:",
+            "connect-src 'self'",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+            "frame-ancestors 'none'");
+
+    /** Chemins de la documentation OpenAPI et de Swagger UI. */
+    static final String[] CHEMINS_DOCUMENTATION = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**"};
+
+    /**
+     * Documentation de l'API (Swagger UI et description OpenAPI) : pages publiques sans aucune donnée.
+     * Les appels « Try it out » visent /api/** et passent par la chaîne principale, avec les mêmes règles
+     * d'accès que Postman ou curl.
+     */
     @Bean
+    @Order(1)
+    public SecurityFilterChain documentationFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher(CHEMINS_DOCUMENTATION)
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(CONTENT_SECURITY_POLICY_DOCUMENTATION))
+                        .referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN))
+                        .permissionsPolicyHeader(permissions -> permissions.policy(PERMISSIONS_POLICY)))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
+
+    /**
+     * Réponse 401. Pour un appel JavaScript (espace agence avec X-Requested-With, ou Swagger UI repéré par
+     * son en-tête Referer), pas d'en-tête WWW-Authenticate : le navigateur n'ouvre pas sa fenêtre de
+     * connexion et la page affiche elle-même le 401. Pour Postman, curl ou un navigateur, le défi
+     * « WWW-Authenticate: Basic » habituel.
+     */
+    static AuthenticationEntryPoint pointEntreeAuthentification() {
+        BasicAuthenticationEntryPoint basic = new BasicAuthenticationEntryPoint();
+        basic.setRealmName("Realm");
+        HttpStatusEntryPoint statutSeul = new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+        return (request, response, exception) -> {
+            String referer = request.getHeader("Referer");
+            boolean appelJavaScript = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"))
+                    || (referer != null && referer.contains("/swagger-ui/"));
+            if (appelJavaScript) {
+                statutSeul.commence(request, response, exception);
+            } else {
+                basic.commence(request, response, exception);
+            }
+        };
+    }
+
+    @Bean
+    @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http, ProtectionConnexion protectionConnexion,
             LimiteurDebit limiteurRequetesPubliques) throws Exception {
         http
@@ -59,7 +125,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/client/**").hasRole("CLIENT")
                         .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(basic -> basic.authenticationEntryPoint(pointEntreeAuthentification()))
                 // Avant toute vérification de mot de passe : limitation des formulaires publics, puis blocage
                 // des identifiants et adresses qui ont accumulé les échecs de connexion.
                 .addFilterBefore(new FiltreLimiteDebit(limiteurRequetesPubliques), BasicAuthenticationFilter.class)

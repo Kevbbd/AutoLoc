@@ -5,6 +5,7 @@ import fr.ece.autoloc.web.dto.AnnulationRequest;
 import fr.ece.autoloc.web.dto.ConsultationRequest;
 import fr.ece.autoloc.web.dto.NouvelleReservationRequest;
 import fr.ece.autoloc.web.dto.ReservationDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.net.URI;
  * Réservation en ligne, sans compte : le client retrouve sa réservation avec le code secret remis à la
  * réservation et son adresse e-mail, toujours transmis dans le corps de la requête.
  */
+@Tag(name = "Réservations (public)", description = "Réserver sans compte, consulter et annuler avec le code secret.")
 @RestController
 @RequestMapping("/api/public/reservations")
 @RequiredArgsConstructor

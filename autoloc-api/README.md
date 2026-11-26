@@ -122,7 +122,9 @@ Les tests utilisent une base **H2 en mémoire** (profil `test`) : aucun serveur 
 
 Comptes de TP : `student / student123` (USER) et `admin / admin123` (ADMIN).
 
-Importer `docs/postman/AutoLoc-security.postman_collection.json` dans Postman, puis lancer la collection avec le **Runner**. Chaque requête vérifie automatiquement le code attendu. Détails et réponses aux questions du TP : [`docs/security-notes.md`](docs/security-notes.md).
+**Avec Swagger UI** (sans rien installer) : ouvrir <http://localhost:8080/swagger-ui.html>, groupe « Démonstration du TP ». « Try it out » puis « Execute » sans compte donne 401 ; « Authorize » avec `student` puis `admin` donne 403 puis 200 sur `/api/admin/report`. Swagger UI est fourni par springdoc-openapi 3.2 (`config/OpenApiConfig`).
+
+**Avec Postman** : importer `docs/postman/AutoLoc-security.postman_collection.json`, puis lancer la collection avec le **Runner**. Chaque requête vérifie automatiquement le code attendu. Détails et réponses aux questions du TP : [`docs/security-notes.md`](docs/security-notes.md).
 
 ## Monitoring
 

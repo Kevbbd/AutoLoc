@@ -3,6 +3,7 @@ package fr.ece.autoloc.web.controller;
 import fr.ece.autoloc.service.ReservationService;
 import fr.ece.autoloc.web.dto.EncaissementRequest;
 import fr.ece.autoloc.web.dto.ReservationDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /** Back-office de l'agence : réservé au rôle ADMIN par SecurityConfig (/api/admin/**). */
+@Tag(name = "Espace agence (ADMIN)", description = "Suivi des réservations, encaissements, restitutions et annulations.")
 @RestController
 @RequestMapping("/api/admin/reservations")
 @RequiredArgsConstructor

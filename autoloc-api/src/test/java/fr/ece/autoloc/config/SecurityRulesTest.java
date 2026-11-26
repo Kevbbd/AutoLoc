@@ -60,7 +60,9 @@ class SecurityRulesTest {
             "/api/client/profil,     student, 403",
             "/api/client/profil,     admin,   403",
             "/api/client/reservations, student, 403",
-            "/js/reinitialisation.js, anonyme, 200"
+            "/js/reinitialisation.js, anonyme, 200",
+            "/swagger-ui/index.html, anonyme, 200",
+            "/v3/api-docs,           anonyme, 200"
     })
     void appliqueLesReglesDAcces(String chemin, String utilisateur, int statutAttendu) throws Exception {
         HttpRequest.Builder requete = HttpRequest.newBuilder(URI.create("http://localhost:" + port + chemin)).GET();
@@ -108,6 +110,42 @@ class SecurityRulesTest {
         assertThat(reponse.headers().firstValue("X-Frame-Options")).contains("DENY");
         assertThat(reponse.headers().firstValue("Referrer-Policy")).contains("same-origin");
         assertThat(reponse.headers().firstValue("Permissions-Policy")).hasValueSatisfying(p -> assertThat(p).contains("camera=()"));
+    }
+
+    /**
+     * Swagger UI : un 401 sans le défi WWW-Authenticate, pour que le navigateur n'ouvre pas sa fenêtre de
+     * connexion pendant un « Try it out ». Postman, curl et les navigateurs reçoivent toujours le défi Basic.
+     */
+    @Test
+    void unAppelDepuisSwaggerUiNeDeclenchePasLaFenetreDeConnexion() throws Exception {
+        URI hello = URI.create("http://localhost:" + port + "/api/hello");
+
+        HttpResponse<String> direct = httpClient.send(HttpRequest.newBuilder(hello).GET().build(),
+                HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> depuisSwagger = httpClient.send(HttpRequest.newBuilder(hello)
+                        .header("Referer", "http://localhost:" + port + "/swagger-ui/index.html").GET().build(),
+                HttpResponse.BodyHandlers.ofString());
+
+        assertThat(direct.statusCode()).isEqualTo(401);
+        assertThat(direct.headers().firstValue("WWW-Authenticate")).hasValueSatisfying(v -> assertThat(v).startsWith("Basic"));
+        assertThat(depuisSwagger.statusCode()).isEqualTo(401);
+        assertThat(depuisSwagger.headers().firstValue("WWW-Authenticate")).isEmpty();
+    }
+
+    /** La description OpenAPI contient les routes du TP et le schéma HTTP Basic ; la page Swagger garde une CSP sans script en ligne. */
+    @Test
+    void documenteLApiEtProtegeLaPageSwagger() throws Exception {
+        HttpResponse<String> description = httpClient.send(
+                HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/v3/api-docs")).GET().build(),
+                HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> page = httpClient.send(
+                HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/swagger-ui/index.html")).GET().build(),
+                HttpResponse.BodyHandlers.ofString());
+
+        assertThat(description.body()).contains("/api/public/ping", "/api/hello", "/api/admin/report", "basicAuth");
+        assertThat(page.headers().firstValue("Content-Security-Policy")).hasValueSatisfying(csp -> assertThat(csp)
+                .contains("script-src 'self'", "object-src 'none'", "frame-ancestors 'none'")
+                .doesNotContain("unsafe-eval"));
     }
 
     private static String basicAuth(String utilisateur, String motDePasse) {

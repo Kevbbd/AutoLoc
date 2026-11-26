@@ -6,6 +6,7 @@ import fr.ece.autoloc.web.dto.AgenceVitrineDto;
 import fr.ece.autoloc.web.dto.DevisDto;
 import fr.ece.autoloc.web.dto.PeriodeReserveeDto;
 import fr.ece.autoloc.web.dto.VehiculeVitrineDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 /** Endpoints publics (sans authentification) qui alimentent la vitrine. */
+@Tag(name = "Vitrine (public)", description = "Flotte, disponibilités, devis et agences.")
 @RestController
 @RequestMapping("/api/public")
 @RequiredArgsConstructor
